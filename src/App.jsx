@@ -1,81 +1,90 @@
 import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
-import Supersamosa from './temp'
 
 function App() {
+  const [count, setCount] = useState(0)
   const [todo, setTodo] = useState('')
-  const [todos,setTodos] = useState([])
-  const [id,setid] = useState(1)
+  const [store, setStore] = useState([
+    { id: 1, value: 'Learn React', done: true },
+    { id: 2, value: 'Build a project', done: false },
+  ])
 
-  const handleChange = (e)=> {
-        
-    
+
+  const handlechange = (e, id) => {
+    const { checked } = e.target;
+    setStore((prevTodos) =>
+      prevTodos.map((todo) =>
+        todo.id === id ? { ...todo, done: checked } : todo
+      )
+    );
   }
 
 
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const todoObj  = {
-      id:id,
-      value:todo,
-      checked:false
+  function addtodo(todo) {
+    let arr = store
+    const newTodo = {
+      "id": arr.length + 1,
+      "value": todo,
+      "done": false
     }
-    setid(id+1)
-    setTodos((prevTodos) =>[...prevTodos, todoObj]);
-    setTodo("")
-
+    arr.push(newTodo)
+    setStore(arr)
+    setTodo('')
   }
-  useEffect(()=>{
-    console.log(todos)
-  },[todos])
+
+  useEffect(() => {
+    console.log(store)
+  }, [store])
+
 
   return (
-    <>
-
+    <> <div className='flex justify-center items-center h-4/5'>
       <div className="m-4 p-10">
-
-        <Supersamosa />
         <br />
-        <form onSubmit={handleSubmit}>
-          <input type="text"
-          value={todo}
-          onChange={(e) => { 
-            setTodo(e.target.value)
+        <h1 className='text-3xl underline font-sans font-bold'>My Todo</h1>
+        <br />
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          addtodo(todo)
+        }}>
 
-          }} 
-          placeholder='Enter a todo' 
-          name='todo' 
-          className="border border-gray-300 rounded-md p-2 text-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500" />
+          <input placeholder="todo likh yaha pe" type="text"
+            value={todo}
+            className="w-half p-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-300" onChange={(e) => { setTodo(e.target.value) }} />
           <br />
-          <button type='submit' 
-          className='bg-blue-500 mt-4 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400'
-          >Save the todo
-          </button>
+          <br />
+          <button type='submit' className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300"> submitt </button>
+
+
         </form>
-          
+
+        <div>
           {
-            todos.map((todo)=>(
-              <div  className=' flex gap-3' key={todo.id}>
-                {todo.value} 
-                <input type="checkbox" onChange={(e)=>{
-                  // console.log(todo.id)
-                  checked=true;
-                  console.log(e)
-                }} name="" id="" />
+            store.map((todo) => (
+              <div
+                key={todo.id}
+                className='flex gap-2'
+              >
+                <div className='mt-4 flex gap-4'>
+                {todo.done ? <div className='line-through' >{todo.value} </div>: <div   >{todo.value} </div> }
+                  
+                  <input type="checkbox"
+                    checked={todo.done}
+                    onChange={(e) => {
+                      handlechange(e, todo.id)
+                    }}
+                  /> 
+                  </div>
               </div>
             ))
           }
 
+        </div>
       </div>
-
+    </div>
     </>
   )
 }
 
 export default App
-
-
-function samosa(x) { return x * x }
